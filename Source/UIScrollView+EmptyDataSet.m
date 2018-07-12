@@ -1036,6 +1036,30 @@ Class dzn_baseClassToSwizzleForTarget(id target)
         return hitView;
     }
     
+     if ([hitView isKindOfClass:[DZNEmptyDataSetView class]]) {
+        NSArray *hitViewSubviews = [[[hitView subviews].firstObject subviews].firstObject subviews];
+        NSMutableArray *buttonsArray = [[NSMutableArray alloc] init];
+        for (UIView *view in hitViewSubviews) {
+            if ([view isKindOfClass:[UIButton class]] && !view.hidden) {
+                [buttonsArray addObject:view];
+            }
+        }
+        UIButton *firstButton = (UIButton *)buttonsArray.firstObject;
+        CGFloat firstButtonMinX = CGRectGetMinX(firstButton.frame);
+        if (buttonsArray.count == 1) {
+            point = [hitView convertPoint:point toView:firstButton];
+            if (point.y > 0 && point.y < CGRectGetHeight(firstButton.frame)) {
+                return (point.x > 0 && point.x < CGRectGetWidth(firstButton.frame)) ? firstButton : nil;
+            }
+        } else {
+            CGFloat secondButtonMinX = CGRectGetMinX(((UIButton *)buttonsArray[1]).frame);
+            point = [hitView convertPoint:point toView:firstButton];
+            if (point.y > 0 && point.y < CGRectGetHeight(firstButton.frame)) {
+                return (point.x > 0 && point.x < CGRectGetWidth(firstButton.frame)) ? firstButton : buttonsArray[1];
+            }
+        }
+    }
+    
     return nil;
 }
 
