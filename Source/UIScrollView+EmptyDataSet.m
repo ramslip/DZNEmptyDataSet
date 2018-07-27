@@ -1022,8 +1022,7 @@ Class dzn_baseClassToSwizzleForTarget(id target)
     }
 }
 
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
-{
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
     UIView *hitView = [super hitTest:point withEvent:event];
     
     // Return any UIControl instance such as buttons, segmented controls, switches, etc.
@@ -1036,7 +1035,7 @@ Class dzn_baseClassToSwizzleForTarget(id target)
         return hitView;
     }
     
-     if ([hitView isKindOfClass:[DZNEmptyDataSetView class]]) {
+    if ([hitView isKindOfClass:[DZNEmptyDataSetView class]]) {
         NSArray *hitViewSubviews = [[[hitView subviews].firstObject subviews].firstObject subviews];
         NSMutableArray *buttonsArray = [[NSMutableArray alloc] init];
         for (UIView *view in hitViewSubviews) {
@@ -1045,6 +1044,9 @@ Class dzn_baseClassToSwizzleForTarget(id target)
             }
         }
         UIButton *firstButton = (UIButton *)buttonsArray.firstObject;
+        if (!buttonsArray.count) {
+            return nil;
+        }
         CGFloat firstButtonMinX = CGRectGetMinX(firstButton.frame);
         if (buttonsArray.count == 1) {
             point = [hitView convertPoint:point toView:firstButton];
